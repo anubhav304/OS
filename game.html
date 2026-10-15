@@ -1,0 +1,2370 @@
+
+<!-- game.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#11110f">
+  <meta name="description" content="Operating Systems Lab — interactive learning game.">
+  <title>OS LAB / Process Control</title>
+
+  <link rel="stylesheet" href="game.css">
+</head>
+
+<body>
+
+  <div class="game-progress">
+    <span id="progressBar"></span>
+  </div>
+
+  <header class="game-header">
+    <a href="index.html" class="back-link">
+      ← FIELD GUIDE
+    </a>
+
+    <div class="game-brand">
+      <span>OS / LAB</span>
+      <small>INTERACTIVE SYSTEMS SIMULATION</small>
+    </div>
+
+    <div class="game-score">
+      SCORE <strong id="score">000</strong>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- =====================================================
+         INTRO
+         ===================================================== -->
+
+    <section class="game-intro" id="introScreen">
+
+      <div class="intro-index">LAB / 01</div>
+
+      <div class="intro-main">
+
+        <span class="eyebrow">PROCESS CONTROL SIMULATOR</span>
+
+        <h1>
+          DON'T JUST<br>
+          <em>READ</em> THE OS.
+        </h1>
+
+        <p>
+          Put processes on a CPU, deal with interrupts,
+          allocate memory, and discover what happens when
+          you make the wrong decision.
+        </p>
+
+        <button class="start-button" id="startGame">
+          START SIMULATION
+          <span>↗</span>
+        </button>
+
+      </div>
+
+      <aside class="intro-aside">
+        <div>
+          <span>01</span>
+          CPU SCHEDULING
+        </div>
+
+        <div>
+          <span>02</span>
+          PROCESS STATES
+        </div>
+
+        <div>
+          <span>03</span>
+          MEMORY ALLOCATION
+        </div>
+
+        <div>
+          <span>04</span>
+          INTERRUPTS
+        </div>
+      </aside>
+
+    </section>
+
+    <!-- =====================================================
+         GAME
+         ===================================================== -->
+
+    <section class="simulation hidden" id="simulation">
+
+      <div class="simulation-top">
+
+        <div>
+          <span class="eyebrow">MISSION / <span id="missionNumber">01</span></span>
+          <h2 id="missionTitle">KEEP THE CPU ALIVE.</h2>
+        </div>
+
+        <div class="simulation-meta">
+          <span>ROUND <b id="roundNumber">01</b></span>
+          <span>ERRORS <b id="errorCount">00</b></span>
+        </div>
+
+      </div>
+
+      <!-- ===================================================
+           MISSION 1
+           =================================================== -->
+
+      <div class="mission active" id="mission1">
+
+        <div class="mission-description">
+
+          <span class="mission-label">MISSION 01 / SCHEDULING</span>
+
+          <h3>
+            Which process<br>
+            runs <em>next?</em>
+          </h3>
+
+          <p>
+            A CPU can execute one process at a time.
+            The scheduler decides who gets that time.
+          </p>
+
+          <p class="instruction">
+            Select the process with the shortest remaining
+            burst time.
+          </p>
+
+        </div>
+
+        <div class="cpu-board">
+
+          <div class="cpu-heading">
+            <span>READY QUEUE</span>
+            <span>BURST / PRIORITY</span>
+          </div>
+
+          <div class="process-list" id="processList">
+
+            <button
+              class="process-card"
+              data-process="P1"
+              data-burst="8"
+              data-priority="3"
+            >
+              <span class="process-id">P1</span>
+
+              <span class="process-info">
+                <strong>EDITOR</strong>
+                <small>CPU BOUND</small>
+              </span>
+
+              <span class="process-value">
+                08 ms
+              </span>
+            </button>
+
+            <button
+              class="process-card"
+              data-process="P2"
+              data-burst="3"
+              data-priority="1"
+            >
+              <span class="process-id">P2</span>
+
+              <span class="process-info">
+                <strong>SHELL</strong>
+                <small>INTERACTIVE</small>
+              </span>
+
+              <span class="process-value">
+                03 ms
+              </span>
+            </button>
+
+            <button
+              class="process-card"
+              data-process="P3"
+              data-burst="6"
+              data-priority="2"
+            >
+              <span class="process-id">P3</span>
+
+              <span class="process-info">
+                <strong>BROWSER</strong>
+                <small>I/O BOUND</small>
+              </span>
+
+              <span class="process-value">
+                06 ms
+              </span>
+            </button>
+
+            <button
+              class="process-card"
+              data-process="P4"
+              data-burst="11"
+              data-priority="4"
+            >
+              <span class="process-id">P4</span>
+
+              <span class="process-info">
+                <strong>COMPILER</strong>
+                <small>CPU BOUND</small>
+              </span>
+
+              <span class="process-value">
+                11 ms
+              </span>
+            </button>
+
+          </div>
+
+          <div class="cpu-slot">
+
+            <div class="cpu-slot-label">
+              CPU / EXECUTING
+            </div>
+
+            <div class="cpu-screen" id="cpuScreen">
+              <span>WAITING</span>
+            </div>
+
+          </div>
+
+          <div class="feedback" id="mission1Feedback">
+            Choose a process.
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ===================================================
+           MISSION 2
+           =================================================== -->
+
+      <div class="mission" id="mission2">
+
+        <div class="mission-description">
+
+          <span class="mission-label">MISSION 02 / PROCESS STATES</span>
+
+          <h3>
+            Something<br>
+            <em>happened.</em>
+          </h3>
+
+          <p>
+            P2 is currently executing. A disk request
+            arrives and the process cannot continue.
+          </p>
+
+          <p class="instruction">
+            Move P2 into the state that actually describes
+            what the OS should do.
+          </p>
+
+        </div>
+
+        <div class="state-game">
+
+          <div class="state-process">
+            <span class="process-tag">PROCESS</span>
+
+            <div class="large-process">
+              P2
+            </div>
+
+            <strong>SHELL</strong>
+
+            <small>
+              CURRENT STATE: RUNNING
+            </small>
+          </div>
+
+          <div class="state-options">
+
+            <button class="state-choice" data-state="ready">
+              <span>01</span>
+              <strong>READY</strong>
+              <small>Waiting for CPU time.</small>
+            </button>
+
+            <button class="state-choice" data-state="blocked">
+              <span>02</span>
+              <strong>BLOCKED</strong>
+              <small>Waiting for an I/O event.</small>
+            </button>
+
+            <button class="state-choice" data-state="terminated">
+              <span>03</span>
+              <strong>TERMINATED</strong>
+              <small>The process has finished.</small>
+            </button>
+
+          </div>
+
+          <div class="feedback" id="mission2Feedback">
+            Identify the correct state.
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ===================================================
+           MISSION 3
+           =================================================== -->
+
+      <div class="mission" id="mission3">
+
+        <div class="mission-description">
+
+          <span class="mission-label">MISSION 03 / MEMORY</span>
+
+          <h3>
+            Find a block<br>
+            <em>that fits.</em>
+          </h3>
+
+          <p>
+            A process requests <strong>180 KB</strong>.
+            The memory manager has several free holes.
+          </p>
+
+          <p class="instruction">
+            Choose the smallest free block that can hold
+            the process.
+          </p>
+
+        </div>
+
+        <div class="memory-game">
+
+          <div class="request-box">
+
+            <span>MEMORY REQUEST</span>
+
+            <strong>180 KB</strong>
+
+            <small>
+              PROCESS / P5
+            </small>
+
+          </div>
+
+          <div class="memory-blocks">
+
+            <button
+              class="memory-block"
+              data-size="120"
+            >
+              <span>BLOCK A</span>
+              <strong>120 KB</strong>
+              <small>FREE</small>
+            </button>
+
+            <button
+              class="memory-block"
+              data-size="256"
+            >
+              <span>BLOCK B</span>
+              <strong>256 KB</strong>
+              <small>FREE</small>
+            </button>
+
+            <button
+              class="memory-block"
+              data-size="512"
+            >
+              <span>BLOCK C</span>
+              <strong>512 KB</strong>
+              <small>FREE</small>
+            </button>
+
+            <button
+              class="memory-block"
+              data-size="192"
+            >
+              <span>BLOCK D</span>
+              <strong>192 KB</strong>
+              <small>FREE</small>
+            </button>
+
+          </div>
+
+          <div class="feedback" id="mission3Feedback">
+            Allocate P5.
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ===================================================
+           MISSION 4
+           =================================================== -->
+
+      <div class="mission" id="mission4">
+
+        <div class="mission-description">
+
+          <span class="mission-label">MISSION 04 / INTERRUPTS</span>
+
+          <h3>
+            The CPU gets<br>
+            <em>interrupted.</em>
+          </h3>
+
+          <p>
+            The CPU is executing P1 when a keyboard
+            interrupt arrives.
+          </p>
+
+          <p class="instruction">
+            Put these events in the correct order.
+            Start with the event that happens first.
+          </p>
+
+        </div>
+
+        <div class="interrupt-game">
+
+          <div class="interrupt-timeline" id="interruptTimeline">
+
+            <div class="timeline-slot">
+              <span>01</span>
+              <div>EMPTY</div>
+            </div>
+
+            <div class="timeline-slot">
+              <span>02</span>
+              <div>EMPTY</div>
+            </div>
+
+            <div class="timeline-slot">
+              <span>03</span>
+              <div>EMPTY</div>
+            </div>
+
+            <div class="timeline-slot">
+              <span>04</span>
+              <div>EMPTY</div>
+            </div>
+
+          </div>
+
+          <div class="interrupt-events" id="interruptEvents">
+
+            <button
+              class="interrupt-event"
+              data-order="3"
+            >
+              <span>IRQ</span>
+              <strong>HANDLER RUNS</strong>
+            </button>
+
+            <button
+              class="interrupt-event"
+              data-order="1"
+            >
+              <span>IRQ</span>
+              <strong>DEVICE SIGNALS</strong>
+            </button>
+
+            <button
+              class="interrupt-event"
+              data-order="4"
+            >
+              <span>RETURN</span>
+              <strong>RESUME P1</strong>
+            </button>
+
+            <button
+              class="interrupt-event"
+              data-order="2"
+            >
+              <span>CPU</span>
+              <strong>SAVE CONTEXT</strong>
+            </button>
+
+          </div>
+
+          <div class="feedback" id="mission4Feedback">
+            Build the interrupt sequence.
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ===================================================
+           GAME COMPLETE
+           =================================================== -->
+
+      <section class="game-complete hidden" id="completeScreen">
+
+        <span class="eyebrow">SIMULATION COMPLETE</span>
+
+        <div class="final-score">
+          <small>FINAL SCORE</small>
+          <strong id="finalScore">000</strong>
+        </div>
+
+        <h2>
+          YOU CAN<br>
+          <em>RUN THE SYSTEM.</em>
+        </h2>
+
+        <p id="finalMessage">
+          You made it through the simulation.
+        </p>
+
+        <div class="result-grid">
+
+          <div>
+            <span>MISSIONS</span>
+            <strong>04 / 04</strong>
+          </div>
+
+          <div>
+            <span>ERRORS</span>
+            <strong id="finalErrors">00</strong>
+          </div>
+
+          <div>
+            <span>STATUS</span>
+            <strong id="finalStatus">PASS</strong>
+          </div>
+
+        </div>
+
+        <div class="complete-actions">
+
+          <button class="restart-button" id="restartGame">
+            RUN AGAIN
+            <span>↻</span>
+          </button>
+
+          <a href="index.html" class="return-button">
+            RETURN TO FIELD GUIDE
+            <span>↗</span>
+          </a>
+
+        </div>
+
+      </section>
+
+    </section>
+
+  </main>
+
+  <footer class="game-footer">
+    <span>OPERATING SYSTEMS / FIELD GUIDE</span>
+    <span>LABORATORY MODE</span>
+    <span>NO PROCESS WAS HARMED.</span>
+  </footer>
+
+  <script src="game.js"></script>
+
+</body>
+</html>
+<!--
+/* game.css */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap');
+
+:root {
+  --paper: #e9e4da;
+  --paper-light: #f4f0e8;
+  --ink: #11110f;
+  --muted: #716c63;
+  --line: #aaa399;
+  --red: #e43d20;
+  --white: #f7f4ed;
+
+  --serif: "Instrument Serif", Georgia, serif;
+  --mono: "DM Mono", "Courier New", monospace;
+
+  --gutter: clamp(20px, 5vw, 70px);
+  --ease: cubic-bezier(.2,.75,.2,1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--paper);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background:
+    linear-gradient(rgba(17,17,15,.035) 1px, transparent 1px),
+    var(--paper);
+  background-size: 100% 7px;
+
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 16px;
+  line-height: 1.55;
+
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: .12;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 3px,
+      rgba(0,0,0,.04) 4px
+    );
+
+  mix-blend-mode: multiply;
+}
+
+button,
+a {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 5px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* =========================================================
+   PROGRESS
+   ========================================================= */
+
+.game-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 4px;
+
+  z-index: 1100;
+  background: var(--ink);
+}
+
+.game-progress span {
+  display: block;
+
+  width: 0;
+  height: 100%;
+
+  background: var(--red);
+
+  transition: width .5s var(--ease);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.game-header {
+  height: 86px;
+
+  padding: 0 var(--gutter);
+
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+
+  border-bottom: 1px solid var(--line);
+}
+
+.back-link,
+.game-score {
+  font-size: .68rem;
+  letter-spacing: .09em;
+}
+
+.back-link {
+  justify-self: start;
+}
+
+.back-link:hover {
+  color: var(--red);
+}
+
+.game-brand {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.game-brand span {
+  font-family: var(--serif);
+  font-size: 1.9rem;
+}
+
+.game-brand small {
+  font-size: .58rem;
+  color: var(--muted);
+  letter-spacing: .08em;
+}
+
+.game-score {
+  justify-self: end;
+  color: var(--muted);
+}
+
+.game-score strong {
+  margin-left: 12px;
+  color: var(--red);
+  font-weight: 400;
+}
+
+/* =========================================================
+   INTRO
+   ========================================================= */
+
+.game-intro {
+  min-height: calc(100vh - 86px);
+
+  max-width: 1450px;
+  margin: auto;
+
+  padding: 10vh var(--gutter);
+
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr) 250px;
+  gap: clamp(30px, 6vw, 100px);
+
+  align-items: center;
+}
+
+.intro-index {
+  align-self: start;
+
+  padding-top: 20px;
+
+  color: var(--red);
+  font-size: .7rem;
+  letter-spacing: .1em;
+}
+
+.intro-main {
+  max-width: 850px;
+}
+
+.eyebrow,
+.mission-label {
+  display: block;
+
+  color: var(--red);
+
+  font-size: .68rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.intro-main h1 {
+  margin: 25px 0 35px;
+
+  font-family: var(--serif);
+  font-size: clamp(5rem, 12vw, 11rem);
+  font-weight: 400;
+  line-height: .73;
+  letter-spacing: -.055em;
+}
+
+.intro-main h1 em,
+.mission-description h3 em,
+.game-complete h2 em {
+  color: var(--red);
+}
+
+.intro-main p {
+  max-width: 48ch;
+
+  margin-bottom: 45px;
+
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.start-button,
+.restart-button {
+  padding: 18px 22px;
+
+  border: 1px solid var(--red);
+  background: transparent;
+  color: var(--red);
+
+  cursor: pointer;
+
+  font-size: .7rem;
+  letter-spacing: .09em;
+
+  transition:
+    background .2s ease,
+    color .2s ease,
+    transform .2s ease;
+}
+
+.start-button span,
+.restart-button span {
+  margin-left: 40px;
+  font-size: 1.1rem;
+}
+
+.start-button:hover,
+.restart-button:hover {
+  background: var(--red);
+  color: var(--white);
+  transform: translateY(-2px);
+}
+
+.intro-aside {
+  align-self: end;
+
+  border-top: 1px solid var(--ink);
+}
+
+.intro-aside div {
+  padding: 15px 0;
+
+  border-bottom: 1px solid var(--line);
+
+  font-size: .68rem;
+}
+
+.intro-aside span {
+  display: inline-block;
+  width: 35px;
+  color: var(--red);
+}
+
+/* =========================================================
+   SIMULATION
+   ========================================================= */
+
+.simulation {
+  max-width: 1450px;
+  margin: auto;
+
+  padding:
+    100px
+    var(--gutter)
+    160px;
+}
+
+.simulation-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+
+  padding-bottom: 35px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.simulation-top h2 {
+  margin: 18px 0 0;
+
+  font-family: var(--serif);
+  font-size: clamp(3.5rem, 7vw, 7.5rem);
+  font-weight: 400;
+  line-height: .8;
+  letter-spacing: -.05em;
+}
+
+.simulation-meta {
+  display: flex;
+  gap: 30px;
+
+  font-size: .65rem;
+  color: var(--muted);
+}
+
+.simulation-meta b {
+  color: var(--red);
+  font-weight: 400;
+}
+
+/* =========================================================
+   MISSIONS
+   ========================================================= */
+
+.mission {
+  display: none;
+
+  grid-template-columns: minmax(250px, .7fr) minmax(500px, 1.3fr);
+  gap: clamp(50px, 8vw, 130px);
+
+  padding: 90px 0 0;
+}
+
+.mission.active {
+  display: grid;
+}
+
+.mission-description {
+  padding-top: 15px;
+}
+
+.mission-description h3 {
+  margin: 20px 0 30px;
+
+  font-family: var(--serif);
+  font-size: clamp(3.2rem, 6vw, 6.5rem);
+  font-weight: 400;
+  line-height: .78;
+  letter-spacing: -.045em;
+}
+
+.mission-description p {
+  max-width: 42ch;
+
+  font-size: .95rem;
+  line-height: 1.75;
+}
+
+.mission-description .instruction {
+  margin-top: 35px;
+  padding: 18px;
+
+  border-left: 2px solid var(--red);
+
+  background: rgba(228,61,32,.055);
+
+  font-size: .82rem;
+}
+
+/* =========================================================
+   CPU GAME
+   ========================================================= */
+
+.cpu-board {
+  border-top: 1px solid var(--ink);
+}
+
+.cpu-heading {
+  display: grid;
+  grid-template-columns: 1fr 130px;
+
+  padding: 13px 0;
+
+  border-bottom: 1px solid var(--line);
+
+  color: var(--muted);
+  font-size: .63rem;
+  letter-spacing: .1em;
+}
+
+.process-card {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: 65px 1fr 100px;
+
+  align-items: center;
+
+  min-height: 105px;
+
+  padding: 15px;
+
+  border: 0;
+  border-bottom: 1px solid var(--line);
+
+  background: transparent;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background .2s ease,
+    color .2s ease;
+}
+
+.process-card:hover {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.process-card.selected {
+  background: var(--red);
+  color: var(--white);
+}
+
+.process-card.wrong {
+  background: #5b241c;
+  color: var(--white);
+}
+
+.process-id {
+  color: var(--red);
+  font-size: .72rem;
+}
+
+.process-card.selected .process-id,
+.process-card.wrong .process-id {
+  color: var(--white);
+}
+
+.process-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.process-info strong {
+  font-family: var(--serif);
+  font-size: 1.8rem;
+  font-weight: 400;
+}
+
+.process-info small {
+  color: var(--muted);
+  font-size: .58rem;
+}
+
+.process-card:hover .process-info small,
+.process-card.selected .process-info small,
+.process-card.wrong .process-info small {
+  color: rgba(255,255,255,.7);
+}
+
+.process-value {
+  justify-self: end;
+
+  font-size: .75rem;
+}
+
+.cpu-slot {
+  margin-top: 45px;
+
+  border: 1px solid var(--ink);
+}
+
+.cpu-slot-label {
+  padding: 10px 14px;
+
+  border-bottom: 1px solid var(--ink);
+
+  font-size: .62rem;
+  letter-spacing: .1em;
+  color: var(--muted);
+}
+
+.cpu-screen {
+  min-height: 150px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 20px,
+      rgba(17,17,15,.035) 21px
+    );
+
+  font-family: var(--serif);
+  font-size: 3rem;
+}
+
+.cpu-screen.running {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.feedback {
+  min-height: 58px;
+
+  margin-top: 20px;
+  padding: 17px;
+
+  border: 1px solid var(--line);
+
+  font-size: .78rem;
+}
+
+.feedback.success {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.feedback.error {
+  border-color: #7c2d1d;
+  color: #7c2d1d;
+}
+
+/* =========================================================
+   PROCESS STATE GAME
+   ========================================================= */
+
+.state-game {
+  border-top: 1px solid var(--ink);
+}
+
+.state-process {
+  padding: 30px 0;
+
+  display: grid;
+  grid-template-columns: 110px 110px 1fr auto;
+  gap: 20px;
+
+  align-items: center;
+
+  border-bottom: 1px solid var(--line);
+}
+
+.process-tag {
+  color: var(--red);
+  font-size: .63rem;
+}
+
+.large-process {
+  width: 85px;
+  height: 85px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+
+  font-family: var(--serif);
+  font-size: 2rem;
+}
+
+.state-process strong {
+  font-family: var(--serif);
+  font-size: 2rem;
+  font-weight: 400;
+}
+
+.state-process small {
+  font-size: .62rem;
+  color: var(--muted);
+}
+
+.state-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  border-bottom: 1px solid var(--line);
+}
+
+.state-choice {
+  min-height: 190px;
+
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  border: 0;
+  border-right: 1px solid var(--line);
+
+  background: transparent;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background .2s ease,
+    color .2s ease;
+}
+
+.state-choice:last-child {
+  border-right: 0;
+}
+
+.state-choice:hover {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.state-choice span {
+  color: var(--red);
+  font-size: .65rem;
+}
+
+.state-choice strong {
+  margin-top: auto;
+
+  font-family: var(--serif);
+  font-size: 2rem;
+  font-weight: 400;
+}
+
+.state-choice small {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: .65rem;
+}
+
+.state-choice:hover small {
+  color: #aaa;
+}
+
+.state-choice.correct {
+  background: var(--red);
+  color: var(--white);
+}
+
+.state-choice.correct span,
+.state-choice.correct small {
+  color: var(--white);
+}
+
+.state-choice.wrong {
+  background: #5b241c;
+  color: var(--white);
+}
+
+/* =========================================================
+   MEMORY GAME
+   ========================================================= */
+
+.memory-game {
+  border-top: 1px solid var(--ink);
+}
+
+.request-box {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+
+  gap: 35px;
+
+  align-items: center;
+
+  padding: 25px 0;
+
+  border-bottom: 1px solid var(--line);
+}
+
+.request-box span,
+.request-box small {
+  font-size: .65rem;
+  color: var(--muted);
+}
+
+.request-box strong {
+  font-family: var(--serif);
+  font-size: 3rem;
+  font-weight: 400;
+}
+
+.memory-blocks {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.memory-block {
+  min-height: 260px;
+
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  border: 0;
+  border-right: 1px solid var(--line);
+
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 7px,
+      rgba(17,17,15,.045) 8px
+    );
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background .2s ease,
+    color .2s ease;
+}
+
+.memory-block:last-child {
+  border-right: 0;
+}
+
+.memory-block:hover {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.memory-block span,
+.memory-block small {
+  font-size: .62rem;
+  color: var(--muted);
+}
+
+.memory-block strong {
+  margin-top: auto;
+
+  font-family: var(--serif);
+  font-size: 2.4rem;
+  font-weight: 400;
+}
+
+.memory-block.correct {
+  background: var(--red);
+  color: var(--white);
+}
+
+.memory-block.correct span,
+.memory-block.correct small {
+  color: var(--white);
+}
+
+.memory-block.wrong {
+  background: #5b241c;
+  color: var(--white);
+}
+
+/* =========================================================
+   INTERRUPT GAME
+   ========================================================= */
+
+.interrupt-game {
+  border-top: 1px solid var(--ink);
+}
+
+.interrupt-timeline {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+
+  border-bottom: 1px solid var(--line);
+}
+
+.timeline-slot {
+  min-height: 150px;
+
+  padding: 18px;
+
+  border-right: 1px solid var(--line);
+
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-slot:last-child {
+  border-right: 0;
+}
+
+.timeline-slot span {
+  color: var(--red);
+  font-size: .65rem;
+}
+
+.timeline-slot div {
+  margin-top: auto;
+
+  font-family: var(--serif);
+  font-size: 1.4rem;
+}
+
+.timeline-slot.filled {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.interrupt-events {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  border-bottom: 1px solid var(--line);
+}
+
+.interrupt-event {
+  min-height: 110px;
+
+  padding: 20px;
+
+  border: 0;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+
+  background: transparent;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.interrupt-event:nth-child(2n) {
+  border-right: 0;
+}
+
+.interrupt-event:nth-last-child(-n+2) {
+  border-bottom: 0;
+}
+
+.interrupt-event:hover {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.interrupt-event span {
+  color: var(--red);
+  font-size: .63rem;
+}
+
+.interrupt-event strong {
+  display: block;
+  margin-top: 25px;
+
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  font-weight: 400;
+}
+
+.interrupt-event.used {
+  opacity: .35;
+  pointer-events: none;
+}
+
+/* =========================================================
+   COMPLETE
+   ========================================================= */
+
+.game-complete {
+  padding: 120px 0;
+
+  text-align: center;
+
+  border-top: 1px solid var(--ink);
+}
+
+.game-complete .eyebrow {
+  margin-bottom: 30px;
+}
+
+.final-score {
+  margin-bottom: 60px;
+}
+
+.final-score small {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: var(--muted);
+  font-size: .65rem;
+  letter-spacing: .1em;
+}
+
+.final-score strong {
+  font-family: var(--serif);
+  font-size: clamp(5rem, 13vw, 12rem);
+  font-weight: 400;
+  line-height: .75;
+}
+
+.game-complete h2 {
+  margin: 0;
+
+  font-family: var(--serif);
+  font-size: clamp(4rem, 10vw, 10rem);
+  font-weight: 400;
+  line-height: .75;
+  letter-spacing: -.05em;
+}
+
+.game-complete > p {
+  max-width: 50ch;
+  margin: 40px auto;
+
+  font-size: 1rem;
+}
+
+.result-grid {
+  max-width: 700px;
+  margin: 70px auto;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+
+.result-grid div {
+  padding: 25px;
+
+  border-right: 1px solid var(--line);
+}
+
+.result-grid div:last-child {
+  border-right: 0;
+}
+
+.result-grid span {
+  display: block;
+
+  margin-bottom: 10px;
+
+  color: var(--muted);
+  font-size: .63rem;
+}
+
+.result-grid strong {
+  font-family: var(--serif);
+  font-size: 2rem;
+  font-weight: 400;
+}
+
+.complete-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.return-button {
+  padding: 18px 22px;
+
+  border: 1px solid var(--ink);
+
+  font-size: .7rem;
+  letter-spacing: .08em;
+
+  transition:
+    background .2s ease,
+    color .2s ease;
+}
+
+.return-button:hover {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.return-button span {
+  margin-left: 30px;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.game-footer {
+  padding: 25px var(--gutter);
+
+  display: flex;
+  justify-content: space-between;
+
+  border-top: 1px solid var(--ink);
+
+  font-size: .6rem;
+  color: var(--muted);
+  letter-spacing: .07em;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 950px) {
+
+  .game-intro {
+    grid-template-columns: 60px 1fr;
+  }
+
+  .intro-aside {
+    display: none;
+  }
+
+  .mission {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+
+  .state-process {
+    grid-template-columns: 90px 90px 1fr;
+  }
+
+  .state-process small {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 650px) {
+
+  :root {
+    --gutter: 20px;
+  }
+
+  .game-header {
+    height: 70px;
+    grid-template-columns: 1fr auto;
+  }
+
+  .game-brand {
+    display: none;
+  }
+
+  .game-intro {
+    min-height: auto;
+
+    padding-top: 100px;
+    padding-bottom: 100px;
+
+    grid-template-columns: 1fr;
+  }
+
+  .intro-index {
+    padding: 0;
+  }
+
+  .intro-main h1 {
+    font-size: clamp(4.3rem, 20vw, 7rem);
+  }
+
+  .simulation {
+    padding-top: 70px;
+  }
+
+  .simulation-top {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .simulation-top h2 {
+    font-size: clamp(3.2rem, 15vw, 6rem);
+  }
+
+  .simulation-meta {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .mission {
+    padding-top: 65px;
+  }
+
+  .process-card {
+    grid-template-columns: 45px 1fr 70px;
+    min-height: 95px;
+  }
+
+  .process-info strong {
+    font-size: 1.45rem;
+  }
+
+  .state-process {
+    grid-template-columns: 75px 85px 1fr;
+    gap: 12px;
+  }
+
+  .state-options {
+    grid-template-columns: 1fr;
+  }
+
+  .state-choice {
+    min-height: 125px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .state-choice:last-child {
+    border-bottom: 0;
+  }
+
+  .memory-blocks {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .memory-block {
+    min-height: 180px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .memory-block:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .request-box {
+    grid-template-columns: 1fr auto;
+  }
+
+  .request-box small {
+    grid-column: 1 / -1;
+  }
+
+  .interrupt-timeline {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .timeline-slot:nth-child(2) {
+    border-right: 0;
+  }
+
+  .interrupt-events {
+    grid-template-columns: 1fr;
+  }
+
+  .interrupt-event {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .interrupt-event:last-child {
+    border-bottom: 0;
+  }
+
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .result-grid div {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .result-grid div:last-child {
+    border-bottom: 0;
+  }
+
+  .game-footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+```
+
+```
+/* game.js */
+
+(() => {
+  "use strict";
+
+  const state = {
+    score: 0,
+    errors: 0,
+    mission: 1,
+    interruptStep: 0,
+    locked: false
+  };
+
+  const $ = (selector, root = document) =>
+    root.querySelector(selector);
+
+  const $$ = (selector, root = document) =>
+    [...root.querySelectorAll(selector)];
+
+  /* =======================================================
+     ELEMENTS
+     ======================================================= */
+
+  const introScreen = $("#introScreen");
+  const simulation = $("#simulation");
+  const completeScreen = $("#completeScreen");
+
+  const scoreEl = $("#score");
+  const errorEl = $("#errorCount");
+  const progressBar = $("#progressBar");
+
+  const missionNumber = $("#missionNumber");
+  const roundNumber = $("#roundNumber");
+  const missionTitle = $("#missionTitle");
+
+  /* =======================================================
+     SCORE
+     ======================================================= */
+
+  function updateScore(points) {
+    state.score += points;
+
+    if (state.score < 0) {
+      state.score = 0;
+    }
+
+    scoreEl.textContent =
+      String(state.score).padStart(3, "0");
+  }
+
+  function registerError() {
+    state.errors++;
+
+    errorEl.textContent =
+      String(state.errors).padStart(2, "0");
+
+    updateScore(-10);
+  }
+
+  /* =======================================================
+     PROGRESS
+     ======================================================= */
+
+  function updateProgress() {
+    const percentage =
+      ((state.mission - 1) / 4) * 100;
+
+    progressBar.style.width = `${percentage}%`;
+  }
+
+  /* =======================================================
+     START
+     ======================================================= */
+
+  $("#startGame").addEventListener("click", () => {
+
+    introScreen.classList.add("hidden");
+    simulation.classList.remove("hidden");
+
+    state.mission = 1;
+
+    showMission(1);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  });
+
+  /* =======================================================
+     MISSION SWITCHING
+     ======================================================= */
+
+  function showMission(number) {
+
+    $$(".mission").forEach(mission => {
+      mission.classList.remove("active");
+    });
+
+    const target =
+      $(`#mission${number}`);
+
+    if (target) {
+      target.classList.add("active");
+    }
+
+    state.mission = number;
+
+    missionNumber.textContent =
+      String(number).padStart(2, "0");
+
+    roundNumber.textContent =
+      String(number).padStart(2, "0");
+
+    const titles = {
+      1: "KEEP THE CPU ALIVE.",
+      2: "A PROCESS GOT BLOCKED.",
+      3: "MEMORY IS NOT INFINITE.",
+      4: "HANDLE THE INTERRUPT."
+    };
+
+    missionTitle.textContent = titles[number];
+
+    updateProgress();
+
+    window.scrollTo({
+      top: simulation.offsetTop - 30,
+      behavior: "smooth"
+    });
+  }
+
+  function nextMission() {
+
+    if (state.mission >= 4) {
+      finishGame();
+      return;
+    }
+
+    showMission(state.mission + 1);
+  }
+
+  /* =======================================================
+     MISSION 1 — CPU SCHEDULING
+     ======================================================= */
+
+  const processCards =
+    $$(".process-card");
+
+  const cpuScreen =
+    $("#cpuScreen");
+
+  const mission1Feedback =
+    $("#mission1Feedback");
+
+  processCards.forEach(card => {
+
+    card.addEventListener("click", () => {
+
+      if (state.locked) {
+        return;
+      }
+
+      const burst =
+        Number(card.dataset.burst);
+
+      const allBursts =
+        processCards.map(item =>
+          Number(item.dataset.burst)
+        );
+
+      const shortest =
+        Math.min(...allBursts);
+
+      processCards.forEach(item => {
+        item.classList.remove(
+          "selected",
+          "wrong"
+        );
+      });
+
+      if (burst === shortest) {
+
+        card.classList.add("selected");
+
+        cpuScreen.classList.add("running");
+
+        cpuScreen.innerHTML = `
+          <strong>${card.dataset.process}</strong>
+        `;
+
+        mission1Feedback.className =
+          "feedback success";
+
+        mission1Feedback.innerHTML =
+          `Correct. ${card.dataset.process} has the shortest burst time: ${burst} ms. The scheduler gets the CPU moving.`;
+
+        updateScore(100);
+
+        state.locked = true;
+
+        setTimeout(() => {
+          state.locked = false;
+          nextMission();
+        }, 1200);
+
+      } else {
+
+        card.classList.add("wrong");
+
+        mission1Feedback.className =
+          "feedback error";
+
+        mission1Feedback.innerHTML =
+          `Not quite. ${card.dataset.process} needs ${burst} ms. Look for the smallest remaining burst.`;
+
+        registerError();
+
+        setTimeout(() => {
+          card.classList.remove("wrong");
+        }, 700);
+      }
+    });
+  });
+
+  /* =======================================================
+     MISSION 2 — PROCESS STATES
+     ======================================================= */
+
+  const stateChoices =
+    $$(".state-choice");
+
+  const mission2Feedback =
+    $("#mission2Feedback");
+
+  stateChoices.forEach(choice => {
+
+    choice.addEventListener("click", () => {
+
+      if (state.locked) {
+        return;
+      }
+
+      const selected =
+        choice.dataset.state;
+
+      stateChoices.forEach(item => {
+        item.classList.remove(
+          "correct",
+          "wrong"
+        );
+      });
+
+      if (selected === "blocked") {
+
+        choice.classList.add("correct");
+
+        mission2Feedback.className =
+          "feedback success";
+
+        mission2Feedback.textContent =
+          "Correct. P2 is waiting for I/O, so it leaves RUNNING and enters BLOCKED.";
+
+        updateScore(100);
+
+        state.locked = true;
+
+        setTimeout(() => {
+          state.locked = false;
+          nextMission();
+        }, 1200);
+
+      } else {
+
+        choice.classList.add("wrong");
+
+        mission2Feedback.className =
+          "feedback error";
+
+        if (selected === "ready") {
+          mission2Feedback.textContent =
+            "READY means waiting for CPU time. P2 is waiting for I/O instead.";
+        } else {
+          mission2Feedback.textContent =
+            "TERMINATED means the process has finished. P2 is still alive.";
+        }
+
+        registerError();
+
+        setTimeout(() => {
+          choice.classList.remove("wrong");
+        }, 700);
+      }
+    });
+  });
+
+  /* =======================================================
+     MISSION 3 — MEMORY
+     ======================================================= */
+
+  const memoryBlocks =
+    $$(".memory-block");
+
+  const mission3Feedback =
+    $("#mission3Feedback");
+
+  memoryBlocks.forEach(block => {
+
+    block.addEventListener("click", () => {
+
+      if (state.locked) {
+        return;
+      }
+
+      const size =
+        Number(block.dataset.size);
+
+      memoryBlocks.forEach(item => {
+        item.classList.remove(
+          "correct",
+          "wrong"
+        );
+      });
+
+      /*
+       * Request = 180 KB.
+       *
+       * Blocks that fit:
+       * 256 KB
+       * 512 KB
+       * 192 KB
+       *
+       * Best fit = 192 KB.
+       */
+
+      if (size === 192) {
+
+        block.classList.add("correct");
+
+        mission3Feedback.className =
+          "feedback success";
+
+        mission3Feedback.textContent =
+          "Correct. 192 KB is the smallest block that can hold the 180 KB request. That is best-fit allocation.";
+
+        updateScore(100);
+
+        state.locked = true;
+
+        setTimeout(() => {
+          state.locked = false;
+          nextMission();
+        }, 1200);
+
+      } else {
+
+        block.classList.add("wrong");
+
+        mission3Feedback.className =
+          "feedback error";
+
+        if (size < 180) {
+          mission3Feedback.textContent =
+            `${size} KB is too small. The process needs 180 KB.`;
+        } else {
+          mission3Feedback.textContent =
+            `${size} KB works, but it is not the smallest block that fits. Look for the best fit.`;
+        }
+
+        registerError();
+
+        setTimeout(() => {
+          block.classList.remove("wrong");
+        }, 700);
+      }
+    });
+  });
+
+  /* =======================================================
+     MISSION 4 — INTERRUPTS
+     ======================================================= */
+
+  const interruptEvents =
+    $$(".interrupt-event");
+
+  const timelineSlots =
+    $$(".timeline-slot");
+
+  const mission4Feedback =
+    $("#mission4Feedback");
+
+  interruptEvents.forEach(event => {
+
+    event.addEventListener("click", () => {
+
+      if (state.locked) {
+        return;
+      }
+
+      const expectedOrder =
+        Number(event.dataset.order);
+
+      /*
+       * The only legal sequence is:
+       *
+       * 1. Device signals
+       * 2. CPU saves context
+       * 3. Handler runs
+       * 4. Resume P1
+       */
+
+      if (expectedOrder === state.interruptStep + 1) {
+
+        const slot =
+          timelineSlots[state.interruptStep];
+
+        slot.classList.add("filled");
+
+        slot.querySelector("div").textContent =
+          event.querySelector("strong").textContent;
+
+        event.classList.add("used");
+
+        state.interruptStep++;
+
+        updateScore(25);
+
+        mission4Feedback.className =
+          "feedback success";
+
+        mission4Feedback.textContent =
+          state.interruptStep === 4
+            ? "Sequence complete. The CPU can safely return to P1."
+            : "Correct. Keep building the sequence.";
+
+        if (state.interruptStep === 4) {
+
+          updateScore(75);
+
+          state.locked = true;
+
+          setTimeout(() => {
+            state.locked = false;
+            finishGame();
+          }, 1200);
+        }
+
+      } else {
+
+        mission4Feedback.className =
+          "feedback error";
+
+        mission4Feedback.textContent =
+          "Wrong order. Think about what the CPU must do before the interrupt handler can safely run.";
+
+        registerError();
+      }
+    });
+  });
+
+  /* =======================================================
+     FINISH
+     ======================================================= */
+
+  function finishGame() {
+
+    $$(".mission").forEach(mission => {
+      mission.classList.remove("active");
+    });
+
+    completeScreen.classList.remove("hidden");
+
+    progressBar.style.width = "100%";
+
+    $("#finalScore").textContent =
+      String(state.score).padStart(3, "0");
+
+    $("#finalErrors").textContent =
+      String(state.errors).padStart(2, "0");
+
+    const status =
+      $("#finalStatus");
+
+    const message =
+      $("#finalMessage");
+
+    if (state.errors === 0) {
+
+      status.textContent = "PERFECT";
+
+      message.textContent =
+        "Four missions. Zero mistakes. The scheduler, memory manager and interrupt machinery survived your decisions.";
+
+    } else if (state.errors <= 2) {
+
+      status.textContent = "PASS";
+
+      message.textContent =
+        "You made a few bad calls, but recovered. That is closer to real operating systems than you might think.";
+
+    } else {
+
+      status.textContent = "RECOVERED";
+
+      message.textContent =
+        "The machine survived. Your first instinct did not always. Run it again and watch where the system punished you.";
+    }
+
+    window.scrollTo({
+      top: completeScreen.offsetTop - 40,
+      behavior: "smooth"
+    });
+  }
+
+  /* =======================================================
+     RESTART
+     ======================================================= */
+
+  $("#restartGame").addEventListener("click", () => {
+
+    state.score = 0;
+    state.errors = 0;
+    state.mission = 1;
+    state.interruptStep = 0;
+    state.locked = false;
+
+    scoreEl.textContent = "000";
+    errorEl.textContent = "00";
+
+    completeScreen.classList.add("hidden");
+
+    processCards.forEach(card => {
+      card.classList.remove(
+        "selected",
+        "wrong"
+      );
+    });
+
+    stateChoices.forEach(choice => {
+      choice.classList.remove(
+        "correct",
+        "wrong"
+      );
+    });
+
+    memoryBlocks.forEach(block => {
+      block.classList.remove(
+        "correct",
+        "wrong"
+      );
+    });
+
+    interruptEvents.forEach(event => {
+      event.classList.remove("used");
+    });
+
+    timelineSlots.forEach((slot, index) => {
+      slot.classList.remove("filled");
+
+      slot.querySelector("div").textContent =
+        "EMPTY";
+    });
+
+    cpuScreen.classList.remove("running");
+
+    cpuScreen.innerHTML =
+      "<span>WAITING</span>";
+
+    mission1Feedback.className =
+      "feedback";
+
+    mission1Feedback.textContent =
+      "Choose a process.";
+
+    mission2Feedback.className =
+      "feedback";
+
+    mission2Feedback.textContent =
+      "Identify the correct state.";
+
+    mission3Feedback.className =
+      "feedback";
+
+    mission3Feedback.textContent =
+      "Allocate P5.";
+
+    mission4Feedback.className =
+      "feedback";
+
+    mission4Feedback.textContent =
+      "Build the interrupt sequence.";
+
+    showMission(1);
+  });
+
+})();
+-->

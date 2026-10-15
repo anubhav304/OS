@@ -1,0 +1,1842 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#11110f">
+  <meta
+    name="description"
+    content="Operating Systems — a visual field guide to processes, memory, kernels, scheduling, filesystems and the machinery beneath modern computing."
+  >
+
+  <title>Operating Systems — Field Guide</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- =========================================================
+       READING PROGRESS
+       ========================================================= -->
+
+  <div class="reading-progress" aria-hidden="true">
+    <span class="progress-bar"></span>
+  </div>
+
+  <!-- =========================================================
+       HEADER
+       ========================================================= -->
+
+  <header class="site-header">
+
+    <div class="header-mark">
+      <span>OS</span>
+      <small>FIELD GUIDE / 01</small>
+    </div>
+
+    <nav class="main-nav" aria-label="Primary navigation">
+
+      <a href="#map">MAP</a>
+      <a href="#processes">PROCESSES</a>
+      <a href="#memory">MEMORY</a>
+      <a href="#kernel">KERNEL</a>
+      <a href="#references">NOTES</a>
+
+      <a class="nav-lab" href="game.html">
+        KERNEL LAB <span>↗</span>
+      </a>
+
+    </nav>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      data-menu-toggle
+      aria-label="Open navigation"
+      aria-expanded="false"
+    >
+      <span></span>
+      <span></span>
+    </button>
+
+  </header>
+
+  <!-- =========================================================
+       MOBILE NAV
+       ========================================================= -->
+
+  <div class="mobile-nav" data-mobile-nav>
+
+    <div class="mobile-nav-inner">
+
+      <span class="micro-label">FIELD GUIDE / NAVIGATION</span>
+
+      <a href="#map">01 / SYSTEM MAP</a>
+      <a href="#physical">02 / PHYSICAL REALITY</a>
+      <a href="#processes">03 / PROCESSES</a>
+      <a href="#memory">04 / MEMORY</a>
+      <a href="#scheduling">05 / SCHEDULING</a>
+      <a href="#filesystem">06 / FILE SYSTEMS</a>
+      <a href="#kernel">07 / KERNEL</a>
+      <a href="#references">08 / NOTES</a>
+
+      <a class="mobile-lab-link" href="game.html">
+        ENTER KERNEL LAB ↗
+      </a>
+
+    </div>
+
+  </div>
+
+  <main>
+
+    <!-- =======================================================
+         HERO
+         ======================================================= -->
+
+    <section class="hero" id="top">
+
+      <div class="hero-topline">
+
+        <span>FIG. 00</span>
+
+        <span>
+          COMPUTER SYSTEMS / THEORY / PRACTICE
+        </span>
+
+        <span>
+          <span class="progress-value">0%</span>
+        </span>
+
+      </div>
+
+      <div class="hero-main">
+
+        <div class="hero-index">
+          01
+        </div>
+
+        <div class="hero-title-wrap">
+
+          <p class="eyebrow">
+            A FIELD GUIDE TO
+          </p>
+
+          <h1>
+            OPERATING<br>
+            <em>SYSTEMS</em>
+          </h1>
+
+        </div>
+
+        <div class="hero-aside">
+
+          <p>
+            The software layer that stands between
+            physical machinery and everything you
+            expect a computer to do.
+          </p>
+
+          <span class="scroll-note">
+            SCROLL TO EXAMINE
+            <b>↓</b>
+          </span>
+
+        </div>
+
+      </div>
+
+      <div class="hero-bottom">
+
+        <span>
+          CPU / MEMORY / STORAGE / I/O
+        </span>
+
+        <span>
+          KERNEL / PROCESSES / RESOURCES
+        </span>
+
+        <span>
+          EDITION 01 — 2026
+        </span>
+
+      </div>
+
+    </section>
+
+    <!-- =======================================================
+         INTRODUCTION
+         ======================================================= -->
+
+    <section class="intro section-rule">
+
+      <div class="section-number">
+        00
+      </div>
+
+      <div class="intro-copy">
+
+        <p class="kicker">
+          BEFORE THE ABSTRACTION
+        </p>
+
+        <h2>
+          A computer is a machine
+          before it is a desktop.
+        </h2>
+
+      </div>
+
+      <div class="intro-text">
+
+        <p>
+          Under every browser, editor, game and terminal
+          sits a collection of physical components doing
+          extremely literal work.
+        </p>
+
+        <p>
+          The operating system turns that machinery into
+          something programmers and people can actually use.
+          It manages the processor, memory, devices, files
+          and competing programs without requiring every
+          application to understand the hardware underneath.
+        </p>
+
+        <span class="pull-note">
+          The abstraction is useful precisely because
+          the hardware is complicated.
+        </span>
+
+      </div>
+
+    </section>
+
+    <!-- =======================================================
+         SYSTEM MAP
+         ======================================================= -->
+
+    <section class="system-map" id="map">
+
+      <div class="figure-heading">
+
+        <span>FIG. 01</span>
+
+        <span>
+          THE COMPUTING STACK
+        </span>
+
+      </div>
+
+      <div class="map-introduction">
+
+        <div>
+          <p class="kicker">
+            SYSTEM MAP
+          </p>
+
+          <h2>
+            Four layers.<br>
+            One machine.
+          </h2>
+        </div>
+
+        <p>
+          Start at the physical machine and move upward.
+          Every layer hides complexity from the one above it.
+          Every layer eventually depends on the one below it.
+        </p>
+
+      </div>
+
+      <div class="system-stack">
+
+        <a
+          class="stack-row"
+          href="#applications"
+          data-map-link
+        >
+
+          <span class="stack-number">04</span>
+
+          <span class="stack-title">
+            APPLICATIONS
+          </span>
+
+          <span class="stack-description">
+            Browser / Editor / Game / Terminal
+          </span>
+
+          <span class="stack-arrow">↗</span>
+
+        </a>
+
+        <div class="stack-connector">
+          <span>USER REQUESTS</span>
+        </div>
+
+        <a
+          class="stack-row"
+          href="#kernel"
+          data-map-link
+        >
+
+          <span class="stack-number">03</span>
+
+          <span class="stack-title">
+            KERNEL
+          </span>
+
+          <span class="stack-description">
+            Scheduling / Memory / Files / Devices
+          </span>
+
+          <span class="stack-arrow">↗</span>
+
+        </a>
+
+        <div class="stack-connector">
+          <span>HARDWARE CONTROL</span>
+        </div>
+
+        <a
+          class="stack-row"
+          href="#hardware"
+          data-map-link
+        >
+
+          <span class="stack-number">02</span>
+
+          <span class="stack-title">
+            HARDWARE
+          </span>
+
+          <span class="stack-description">
+            CPU / RAM / Storage / I/O
+          </span>
+
+          <span class="stack-arrow">↗</span>
+
+        </a>
+
+        <a
+          class="stack-row stack-row-last"
+          href="#physical"
+          data-map-link
+        >
+
+          <span class="stack-number">01</span>
+
+          <span class="stack-title">
+            PHYSICAL REALITY
+          </span>
+
+          <span class="stack-description">
+            Electricity doing an unreasonable amount of work
+          </span>
+
+          <span class="stack-arrow">↗</span>
+
+        </a>
+
+      </div>
+
+      <div class="figure-caption">
+
+        <span>FIG. 01</span>
+
+        <span>
+          EVERY ABSTRACTION EVENTUALLY BOTTOMS OUT IN HARDWARE.
+        </span>
+
+      </div>
+
+    </section>
+
+    <!-- =======================================================
+         PHYSICAL REALITY
+         ======================================================= -->
+
+    <section
+      class="chapter chapter-dark"
+      id="physical"
+    >
+
+      <div class="chapter-index">
+        01
+      </div>
+
+      <div class="chapter-heading">
+
+        <p class="kicker">
+          THE FOUNDATION
+        </p>
+
+        <h2>
+          Physical<br>
+          <em>Reality</em>
+        </h2>
+
+      </div>
+
+      <div class="chapter-description">
+
+        <p>
+          Before processes, files and applications,
+          there is electricity moving through physical
+          structures at extraordinary speed.
+        </p>
+
+        <p>
+          The operating system cannot escape this layer.
+          It can abstract it. It cannot abolish it.
+        </p>
+
+      </div>
+
+      <div class="hardware-diagram" id="hardware">
+
+        <div class="diagram-label diagram-label-top">
+          PROCESSOR
+        </div>
+
+        <div class="hardware-core">
+
+          <div class="hardware-unit">
+            <span>CPU</span>
+            <small>INSTRUCTIONS</small>
+          </div>
+
+          <div class="hardware-unit">
+            <span>RAM</span>
+            <small>VOLATILE MEMORY</small>
+          </div>
+
+          <div class="hardware-unit">
+            <span>I/O</span>
+            <small>DEVICES</small>
+          </div>
+
+          <div class="hardware-unit">
+            <span>DISK</span>
+            <small>PERSISTENCE</small>
+          </div>
+
+        </div>
+
+        <div class="hardware-lines" aria-hidden="true">
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+        </div>
+
+        <div class="diagram-label diagram-label-bottom">
+          PHYSICAL RESOURCES
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =======================================================
+         APPLICATIONS
+         ======================================================= -->
+
+    <section
+      class="applications chapter-light"
+      id="applications"
+    >
+
+      <div class="section-number">
+        04
+      </div>
+
+      <div class="applications-heading">
+
+        <p class="kicker">
+          WHAT YOU ACTUALLY TOUCH
+        </p>
+
+        <h2>
+          Applications
+        </h2>
+
+      </div>
+
+      <div class="applications-copy">
+
+        <p>
+          Your browser does not own the CPU.
+          Your editor does not own the disk.
+          A game cannot simply take whatever memory it wants.
+        </p>
+
+        <p>
+          Applications ask the operating system for resources.
+          The kernel decides what they get.
+        </p>
+
+        <a href="#kernel" class="text-link">
+          SEE THE KERNEL <span>→</span>
+        </a>
+
+      </div>
+
+    </section>
+
+    <!-- =======================================================
+         PROCESS SECTION
+         ======================================================= -->
+
+    <section
+      class="content-section"
+      id="processes"
+    >
+
+      <div class="section-header">
+
+        <div class="section-id">
+          02
+        </div>
+
+        <div>
+          <p class="kicker">
+            PROCESS MANAGEMENT
+          </p>
+
+          <h2>
+            A program is<br>
+            <em>not</em> a process.
+          </h2>
+        </div>
+
+        <p class="section-lead">
+          A program is instructions sitting somewhere.
+          A process is those instructions in motion,
+          accompanied by state, resources and context.
+        </p>
+
+      </div>
+
+      <div class="process-anatomy">
+
+        <div class="figure-heading">
+
+          <span>FIG. 02</span>
+
+          <span>PROCESS ANATOMY</span>
+
+        </div>
+
+        <div class="process-layout">
+
+          <div class="memory-map">
+
+            <div class="memory-region stack-region">
+
+              <span class="region-name">
+                STACK
+              </span>
+
+              <span class="region-description">
+                Function calls / local variables
+              </span>
+
+            </div>
+
+            <div class="memory-region free-region">
+
+              <span class="region-name">
+                FREE SPACE
+              </span>
+
+              <span class="region-description">
+                Unallocated virtual address space
+              </span>
+
+            </div>
+
+            <div class="memory-region heap-region">
+
+              <span class="region-name">
+                HEAP
+              </span>
+
+              <span class="region-description">
+                Dynamic allocation
+              </span>
+
+            </div>
+
+            <div class="memory-region data-region">
+
+              <span class="region-name">
+                DATA
+              </span>
+
+              <span class="region-description">
+                Global / static data
+              </span>
+
+            </div>
+
+            <div class="memory-region text-region">
+
+              <span class="region-name">
+                TEXT
+              </span>
+
+              <span class="region-description">
+                Program instructions
+              </span>
+
+            </div>
+
+          </div>
+
+          <aside class="diagram-notes">
+
+            <div class="diagram-note">
+
+              <span>→</span>
+
+              <p>
+                The stack typically grows toward
+                lower addresses.
+              </p>
+
+            </div>
+
+            <div class="diagram-note">
+
+              <span>→</span>
+
+              <p>
+                The heap handles dynamically
+                allocated memory.
+              </p>
+
+            </div>
+
+            <div class="diagram-note">
+
+              <span>→</span>
+
+              <p>
+                The exact layout depends on architecture,
+                compiler and operating system.
+              </p>
+
+            </div>
+
+          </aside>
+
+        </div>
+
+      </div>
+
+      <div class="process-states">
+
+        <div class="subsection-heading">
+
+          <span>PROCESS STATES</span>
+
+          <span>
+            A PROCESS IS ALWAYS SOMEWHERE IN THIS MACHINE.
+          </span>
+
+        </div>
+
+        <div class="state-line">
+
+          <button
+            type="button"
+            class="state-item is-active"
+            data-process-step="0"
+          >
+            <span>01</span>
+            <strong>NEW</strong>
+          </button>
+
+          <span class="state-arrow">→</span>
+
+          <button
+            type="button"
+            class="state-item"
+            data-process-step="1"
+          >
+            <span>02</span>
+            <strong>READY</strong>
+          </button>
+
+          <span class="state-arrow">→</span>
+
+          <button
+            type="button"
+            class="state-item"
+            data-process-step="2"
+          >
+            <span>03</span>
+            <strong>RUNNING</strong>
+          </button>
+
+          <span class="state-arrow">→</span>
+
+          <button
+            type="button"
+            class="state-item"
+            data-process-step="3"
+          >
+            <span>04</span>
+            <strong>WAITING</strong>
+          </button>
+
+          <span class="state-arrow">→</span>
+
+          <button
+            type="button"
+            class="state-item"
+            data-process-step="4"
+          >
+            <span>05</span>
+            <strong>TERMINATED</strong>
+          </button>
+
+        </div>
+
+        <div class="state-explanation">
+
+          <div class="state-current">
+            <span class="micro-label">CURRENT STATE</span>
+            <strong data-process-state>NEW</strong>
+          </div>
+
+          <p data-process-description>
+            The process has been created but has not entered
+            the ready queue.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =======================================================
+         KERNEL
+         ======================================================= -->
+
+    <section
+      class="kernel-section chapter-dark"
+      id="kernel"
+    >
+
+      <div class="chapter-index">
+        03
+      </div>
+
+      <div class="kernel-title">
+
+        <p class="kicker">
+          THE PRIVILEGED LAYER
+        </p>
+
+        <h2>
+          Kernel
+        </h2>
+
+        <p>
+          The part of the operating system that gets
+          to make decisions ordinary programs cannot.
+        </p>
+
+      </div>
+
+      <div class="kernel-principles">
+
+        <article class="kernel-principle">
+
+          <span>01</span>
+
+          <h3>
+            SCHEDULING
+          </h3>
+
+          <p>
+            Decide which runnable process gets
+            processor time.
+          </p>
+
+          <a href="#scheduling">
+            EXAMINE ↘
+          </a>
+
+        </article>
+
+        <article class="kernel-principle">
+
+          <span>02</span>
+
+          <h3>
+            MEMORY
+          </h3>
+
+          <p>
+            Give processes useful address spaces
+            without letting them trample one another.
+          </p>
+
+          <a href="#memory">
+            EXAMINE ↘
+          </a>
+
+        </article>
+
+        <article class="kernel-principle">
+
+          <span>03</span>
+
+          <h3>
+            FILES
+          </h3>
+
+          <p>
+            Turn persistent storage into a structure
+            programs can reason about.
+          </p>
+
+          <a href="#filesystem">
+            EXAMINE ↘
+          </a>
+
+        </article>
+
+        <article class="kernel-principle">
+
+          <span>04</span>
+
+          <h3>
+            DEVICES
+          </h3>
+
+          <p>
+            Coordinate hardware that operates at very
+            different speeds and interfaces.
+          </p>
+
+          <a href="#system-calls">
+            EXAMINE ↘
+          </a>
+
+        </article>
+
+      </div>
+
+    </section>
+
+    <!-- =======================================================
+         CPU SCHEDULING
+         ======================================================= -->
+
+    <section
+      class="content-section"
+      id="scheduling"
+    >
+
+      <div class="section-header">
+
+        <div class="section-id">
+          03.1
+        </div>
+
+        <div>
+
+          <p class="kicker">
+            CPU SCHEDULING
+          </p>
+
+          <h2>
+            The CPU is fast.<br>
+            <em>Demand is faster.</em>
+          </h2>
+
+        </div>
+
+        <p class="section-lead">
+          When several processes want the processor,
+          the scheduler has to choose. Every policy makes
+          trade-offs.
+        </p>
+
+      </div>
+
+      <div class="scheduling-visual">
+
+        <div class="cpu-label">
+          CPU
+        </div>
+
+        <div class="cpu-track">
+
+          <div class="cpu-block cpu-p1">
+            P1
+          </div>
+
+          <div class="cpu-block cpu-p2">
+            P2
+          </div>
+
+          <div class="cpu-block cpu-p4">
+            P4
+          </div>
+
+          <div class="cpu-block cpu-p3">
+            P3
+          </div>
+
+        </div>
+
+        <div class="timeline">
+
+          <span>0</span>
+          <span>5</span>
+          <span>8</span>
+          <span>10</span>
+          <span>17</span>
+
+        </div>
+
+      </div>
+
+      <div class="comparison-table">
+
+        <div class="table-row table-head">
+
+          <span>POLICY</span>
+          <span>DECISION</span>
+          <span>STRENGTH</span>
+          <span>PROBLEM</span>
+
+        </div>
+
+        <div class="table-row">
+
+          <span>FCFS</span>
+
+          <span>
+            First process to arrive runs first.
+          </span>
+
+          <span>
+            Simple
+          </span>
+
+          <span>
+            Long jobs can delay everything behind them.
+          </span>
+
+        </div>
+
+        <div class="table-row">
+
+          <span>SJF</span>
+
+          <span>
+            Run the shortest available job.
+          </span>
+
+          <span>
+            Efficient average waiting
+          </span>
+
+          <span>
+            Long processes may starve.
+          </span>
+
+        </div>
+
+        <div class="table-row">
+
+          <span>ROUND ROBIN</span>
+
+          <span>
+            Give each process a time slice.
+          </span>
+
+          <span>
+            Responsive
+          </span>
+
+          <span>
+            Too much switching wastes CPU time.
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =======================================================
+         MEMORY
+         ======================================================= -->
+
+    <section
+      class="content-section memory-section"
+      id="memory"
+    >
+
+      <div class="section-header">
+
+        <div class="section-id">
+          03.2
+        </div>
+
+        <div>
+
+          <p class="kicker">
+            MEMORY MANAGEMENT
+          </p>
+
+          <h2>
+            RAM is real.<br>
+            <em>Memory is an abstraction.</em>
+          </h2>
+
+        </div>
+
+        <p class="section-lead">
+          Processes behave as if they have their own
+          private memory. The operating system works very
+          hard to make that illusion believable.
+        </p>
+
+      </div>
+
+      <div class="memory-concept">
+
+        <div class="address-column">
+
+          <span class="address-title">
+            VIRTUAL ADDRESS
+          </span>
+
+          <div class="address-box">
+            <span>0x0000</span>
+            <span>0x12F8</span>
+            <span>0x4000</span>
+            <span>0x7FFF</span>
+          </div>
+
+        </div>
+
+        <div class="translation-arrow">
+          <span>MMU</span>
+          <b>→</b>
+        </div>
+
+        <div class="address-column physical">
+
+          <span class="address-title">
+            PHYSICAL MEMORY
+          </span>
+
+          <div class="physical-memory">
+
+            <div class="physical-block block-a">
+              P1
+            </div>
+
+            <div class="physical-block block-b">
+              P4
+            </div>
+
+            <div class="physical-block block-c">
+              P2
+            </div>
+
+            <div class="physical-block block-d">
+              OS
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="memory-notes">
+
+        <div>
+          <span>01</span>
+          <p>
+            Virtual addresses let each process operate
+            inside its own apparent memory space.
+          </p>
+        </div>
+
+        <div>
+          <span>02</span>
+          <p>
+            Page tables map virtual addresses to physical
+            frames.
+          </p>
+        </div>
+
+        <div>
+          <span>03</span>
+          <p>
+            The MMU performs address translation while
+            the program runs.
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =======================================================
+         FILE SYSTEM
+         ======================================================= -->
+
+    <section
+      class="content-section filesystem-section"
+      id="filesystem"
+    >
+
+      <div class="section-header">
+
+        <div class="section-id">
+          03.3
+        </div>
+
+        <div>
+
+          <p class="kicker">
+            PERSISTENT STORAGE
+          </p>
+
+          <h2>
+            Files are<br>
+            <em>organised lies.</em>
+          </h2>
+
+        </div>
+
+        <p class="section-lead">
+          A disk stores blocks. A filesystem turns those
+          blocks into names, directories, metadata and
+          structures that humans can navigate.
+        </p>
+
+      </div>
+
+      <div class="filesystem-diagram">
+
+        <div class="directory-tree">
+
+          <div class="tree-line root">
+            <span>▾</span>
+            <strong>/</strong>
+          </div>
+
+          <div class="tree-line indent-one">
+            <span>▾</span>
+            <strong>home/</strong>
+          </div>
+
+          <div class="tree-line indent-two">
+            <span>▾</span>
+            <strong>student/</strong>
+          </div>
+
+          <div class="tree-line indent-three">
+            <span>—</span>
+            <span>notes.txt</span>
+          </div>
+
+          <div class="tree-line indent-three">
+            <span>—</span>
+            <span>kernel.c</span>
+          </div>
+
+          <div class="tree-line indent-three">
+            <span>▾</span>
+            <strong>projects/</strong>
+          </div>
+
+          <div class="tree-line indent-four">
+            <span>—</span>
+            <span>scheduler.c</span>
+          </div>
+
+        </div>
+
+        <div class="filesystem-meta">
+
+          <span class="micro-label">
+            OBJECT
+          </span>
+
+          <strong>
+            kernel.c
+          </strong>
+
+          <dl>
+
+            <div>
+              <dt>TYPE</dt>
+              <dd>REGULAR FILE</dd>
+            </div>
+
+            <div>
+              <dt>SIZE</dt>
+              <dd>18.4 KB</dd>
+            </div>
+
+            <div>
+              <dt>OWNER</dt>
+              <dd>STUDENT</dd>
+            </div>
+
+            <div>
+              <dt>PERMISSION</dt>
+              <dd>rw-r--r--</dd>
+            </div>
+
+          </dl>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =======================================================
+         SYSTEM CALLS
+         ======================================================= -->
+
+    <section
+      class="system-call-section chapter-dark"
+      id="system-calls"
+    >
+
+      <div class="chapter-index">
+        03.4
+      </div>
+
+      <div class="system-call-heading">
+
+        <p class="kicker">
+          USER SPACE → KERNEL SPACE
+        </p>
+
+        <h2>
+          The controlled<br>
+          doorway.
+        </h2>
+
+        <p>
+          Applications cannot simply perform privileged
+          operations whenever they feel like it.
+          They cross a defined interface.
+        </p>
+
+      </div>
+
+      <div class="syscall-flow">
+
+        <div
+          class="syscall-stage is-active"
+          data-syscall-stage
+        >
+          <span>01</span>
+          <strong>USER SPACE</strong>
+          <small>APPLICATION</small>
+        </div>
+
+        <div class="syscall-arrow">→</div>
+
+        <div
+          class="syscall-stage"
+          data-syscall-stage
+        >
+          <span>02</span>
+          <strong>SYSTEM CALL</strong>
+          <small>TRAP / ENTRY</small>
+        </div>
+
+        <div class="syscall-arrow">→</div>
+
+        <div
+          class="syscall-stage"
+          data-syscall-stage
+        >
+          <span>03</span>
+          <strong>KERNEL SPACE</strong>
+          <small>PRIVILEGED CODE</small>
+        </div>
+
+        <div class="syscall-arrow">→</div>
+
+        <div
+          class="syscall-stage"
+          data-syscall-stage
+        >
+          <span>04</span>
+          <strong>RESOURCE</strong>
+          <small>DEVICE / FILE / MEMORY</small>
+        </div>
+
+        <div class="syscall-arrow">→</div>
+
+        <div
+          class="syscall-stage"
+          data-syscall-stage
+        >
+          <span>05</span>
+          <strong>RETURN</strong>
+          <small>RESULT</small>
+        </div>
+
+      </div>
+
+      <div class="syscall-controls">
+
+        <button
+          class="editorial-button"
+          type="button"
+          data-syscall-trigger
+        >
+          TRACE A SYSTEM CALL
+          <span>↗</span>
+        </button>
+
+        <span
+          class="syscall-status"
+          data-syscall-status
+        >
+          READY
+        </span>
+
+      </div>
+
+    </section>
+
+    <!-- =======================================================
+         DEADLOCK
+         ======================================================= -->
+
+    <section
+      class="content-section deadlock-section"
+      id="deadlocks"
+    >
+
+      <div class="section-header">
+
+        <div class="section-id">
+          03.5
+        </div>
+
+        <div>
+
+          <p class="kicker">
+            CONCURRENCY
+          </p>
+
+          <h2>
+            Waiting can<br>
+            become a <em>cycle.</em>
+          </h2>
+
+        </div>
+
+        <p class="section-lead">
+          A deadlock occurs when processes wait for resources
+          held by one another, leaving nobody able to proceed.
+        </p>
+
+      </div>
+
+      <div class="deadlock-figure">
+
+        <div class="deadlock-node process-node p1">
+          P1
+        </div>
+
+        <div class="deadlock-node resource-node r1">
+          R1
+        </div>
+
+        <div class="deadlock-node process-node p2">
+          P2
+        </div>
+
+        <div class="deadlock-node resource-node r2">
+          R2
+        </div>
+
+        <div class="deadlock-line line-one"></div>
+        <div class="deadlock-line line-two"></div>
+        <div class="deadlock-line line-three"></div>
+        <div class="deadlock-line line-four"></div>
+
+        <div class="deadlock-center">
+          CYCLE
+        </div>
+
+      </div>
+
+      <div class="deadlock-explanation">
+
+        <div>
+          <span>01</span>
+          <p>
+            P1 holds R1 and waits for R2.
+          </p>
+        </div>
+
+        <div>
+          <span>02</span>
+          <p>
+            P2 holds R2 and waits for R1.
+          </p>
+        </div>
+
+        <div>
+          <span>03</span>
+          <p>
+            Neither can proceed.
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =======================================================
+         CONCEPT CHECK
+         ======================================================= -->
+
+    <section class="concept-check">
+
+      <div class="check-index">
+        TEST YOUR MODEL
+      </div>
+
+      <div class="check-copy">
+
+        <p class="kicker">
+          IF YOU UNDERSTAND THE SYSTEM
+        </p>
+
+        <h2>
+          You should be able to explain
+          what happens when a program runs.
+        </h2>
+
+      </div>
+
+      <div class="check-list">
+
+        <div>
+          <span>01</span>
+          <p>
+            Where does the program's code live?
+          </p>
+        </div>
+
+        <div>
+          <span>02</span>
+          <p>
+            Who decides when it gets CPU time?
+          </p>
+        </div>
+
+        <div>
+          <span>03</span>
+          <p>
+            How does its virtual memory become physical?
+          </p>
+        </div>
+
+        <div>
+          <span>04</span>
+          <p>
+            How does it ask the kernel to open a file?
+          </p>
+        </div>
+
+        <div>
+          <span>05</span>
+          <p>
+            What happens when two processes need
+            incompatible resources?
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =======================================================
+         KERNEL LAB CTA
+         ======================================================= -->
+
+    <section class="lab-cta">
+
+      <div class="lab-cta-number">
+        LAB
+      </div>
+
+      <div class="lab-cta-content">
+
+        <p class="kicker">
+          STOP READING. START OPERATING.
+        </p>
+
+        <h2>
+          Enter the<br>
+          <em>Kernel Lab.</em>
+        </h2>
+
+        <p>
+          Schedule processes. Allocate memory.
+          Detect deadlocks. Make decisions.
+          Learn what the operating system is doing
+          by making it do something.
+        </p>
+
+        <a
+          href="game.html"
+          class="lab-button"
+        >
+          ENTER KERNEL LAB
+          <span>↗</span>
+        </a>
+
+      </div>
+
+      <div class="lab-cta-side">
+        <span>INTERACTIVE / 01</span>
+        <span>CPU / MEMORY / DEADLOCKS</span>
+        <span>NO TUTORIAL MODE</span>
+      </div>
+
+    </section>
+
+    <!-- =======================================================
+         REFERENCES
+         ======================================================= -->
+
+    <section
+      class="references"
+      id="references"
+    >
+
+      <div class="section-number">
+        05
+      </div>
+
+      <div class="references-heading">
+
+        <p class="kicker">
+          READING / REFERENCES
+        </p>
+
+        <h2>
+          Further<br>
+          <em>reading.</em>
+        </h2>
+
+      </div>
+
+      <div class="reference-list">
+
+        <details>
+          <summary>
+            <span>01</span>
+            PROCESS MANAGEMENT
+            <b>+</b>
+          </summary>
+
+          <div class="reference-content">
+
+            <p>
+              Study process creation, process states,
+              context switching, scheduling and inter-process
+              communication.
+            </p>
+
+            <span class="reference-tag">
+              PROCESSES / CPU / CONCURRENCY
+            </span>
+
+          </div>
+
+        </details>
+
+        <details>
+          <summary>
+            <span>02</span>
+            MEMORY MANAGEMENT
+            <b>+</b>
+          </summary>
+
+          <div class="reference-content">
+
+            <p>
+              Continue with virtual memory, paging,
+              page tables, translation lookaside buffers
+              and memory protection.
+            </p>
+
+            <span class="reference-tag">
+              RAM / MMU / PAGING
+            </span>
+
+          </div>
+
+        </details>
+
+        <details>
+          <summary>
+            <span>03</span>
+            FILE SYSTEMS
+            <b>+</b>
+          </summary>
+
+          <div class="reference-content">
+
+            <p>
+              Explore directories, inodes, metadata,
+              allocation strategies, journaling and
+              persistent storage.
+            </p>
+
+            <span class="reference-tag">
+              STORAGE / FILES / DISKS
+            </span>
+
+          </div>
+
+        </details>
+
+        <details>
+          <summary>
+            <span>04</span>
+            CONCURRENCY
+            <b>+</b>
+          </summary>
+
+          <div class="reference-content">
+
+            <p>
+              Threads, locks, semaphores, race conditions,
+              starvation and deadlock form the next layer
+              of the problem.
+            </p>
+
+            <span class="reference-tag">
+              THREADS / LOCKS / DEADLOCKS
+            </span>
+
+          </div>
+
+        </details>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- =========================================================
+       FOOTER
+       ========================================================= -->
+
+  <footer class="site-footer">
+
+    <div class="footer-top">
+
+      <span>OPERATING SYSTEMS</span>
+
+      <span>
+        FIELD GUIDE / EDITION 01
+      </span>
+
+    </div>
+
+    <div class="footer-statement">
+
+      <p class="kicker">
+        FINAL NOTE
+      </p>
+
+      <h2>
+        EVERY ABSTRACTION<br>
+        EVENTUALLY BOTTOMS OUT<br>
+        <em>IN HARDWARE.</em>
+      </h2>
+
+    </div>
+
+    <div class="footer-grid">
+
+      <div class="footer-column">
+
+        <span class="micro-label">
+          CHAPTERS
+        </span>
+
+        <a href="#physical">
+          01 / PHYSICAL REALITY
+        </a>
+
+        <a href="#processes">
+          02 / PROCESSES
+        </a>
+
+        <a href="#kernel">
+          03 / KERNEL
+        </a>
+
+        <a href="#memory">
+          04 / MEMORY
+        </a>
+
+      </div>
+
+      <div class="footer-column">
+
+        <span class="micro-label">
+          CONTINUE
+        </span>
+
+        <a href="#scheduling">
+          CPU SCHEDULING
+        </a>
+
+        <a href="#filesystem">
+          FILE SYSTEMS
+        </a>
+
+        <a href="#deadlocks">
+          DEADLOCKS
+        </a>
+
+        <a href="game.html">
+          KERNEL LAB ↗
+        </a>
+
+      </div>
+
+      <div class="footer-column footer-meta">
+
+        <span class="micro-label">
+          FIELD GUIDE
+        </span>
+
+        <p>
+          A visual introduction to the machinery
+          beneath modern computing.
+        </p>
+
+        <span>
+          EDITION 01 / 2026
+        </span>
+
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+
+      <span>
+        FIG. 09
+      </span>
+
+      <span>
+        CPU / RAM / STORAGE / I/O
+      </span>
+
+      <span>
+        <span data-current-year>2026</span>
+      </span>
+
+    </div>
+
+  </footer>
+
+  <!-- =========================================================
+       COMMAND PALETTE
+       ========================================================= -->
+
+  <div
+    class="command-palette"
+    aria-hidden="true"
+  >
+
+    <div class="command-window">
+
+      <div class="command-header">
+
+        <span>
+          FIELD GUIDE / SEARCH
+        </span>
+
+        <button
+          type="button"
+          data-command-close
+          aria-label="Close search"
+        >
+          ESC
+        </button>
+
+      </div>
+
+      <div class="command-input-wrap">
+
+        <span>⌕</span>
+
+        <input
+          class="command-input"
+          type="search"
+          placeholder="Find a concept..."
+          autocomplete="off"
+          spellcheck="false"
+        >
+
+        <kbd>CTRL K</kbd>
+
+      </div>
+
+      <div
+        class="command-results"
+        role="listbox"
+      ></div>
+
+    </div>
+
+  </div>
+
+  <!-- =========================================================
+       BACK TO TOP
+       ========================================================= -->
+
+  <button
+    class="scroll-top"
+    type="button"
+    data-scroll-top
+    aria-label="Scroll to top"
+  >
+    ↑
+  </button>
+
+  <script src="main.js"></script>
+
+</body>
+</html>
